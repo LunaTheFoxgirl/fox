@@ -37,7 +37,6 @@ void main(string[] args)
 			"number|n", "Number all output lines", &numberAll,
 			"squeeze-blank|s", "Supress repeated empty output lines", &squeezeBlanks,
 			"show-tabs|T", "Display TAB characters as ^I", &showTabs,
-			"help", "Display this help and exit", &showHelp,
 			"version", "Output version information and exit", &showVersion,
 		);
 	} catch(Exception ex) {
@@ -47,6 +46,8 @@ void main(string[] args)
 		return;
 	}
 
+	
+
 	// Show version info if needed.
 	if (showVersion) {
 		writeln("fox 1.0\nCopyright (C) 2022 Luna the Foxgirl.\n\nWritten by Luna the Foxgirl");
@@ -54,7 +55,7 @@ void main(string[] args)
 	}
 
 	// Show help text if needed.
-	if (showHelp) {
+	if (helpInfo.helpWanted && args.length != 1) {
 		defaultGetoptPrinter(HELP_HEADER, helpInfo.options);
 		return;
 	}
