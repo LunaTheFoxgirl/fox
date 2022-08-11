@@ -55,7 +55,7 @@ void main(string[] args)
 	}
 
 	// Show help text if needed.
-	if (helpInfo.helpWanted && args.length != 1) {
+	if (helpInfo.helpWanted) {
 		defaultGetoptPrinter(HELP_HEADER, helpInfo.options);
 		return;
 	}
@@ -76,14 +76,12 @@ void main(string[] args)
 
 void printFile(string f) {
 	bool isNewLine = true;
-	size_t i;
 	size_t ln = 1;
 	foreach(g; byGrapheme(f)) {
 
 		// Handle tabs
 		if (g[0] == '\t' && showTabs) {
 			write("^I");
-			i++;
 			isNewLine = false;
 			continue;
 		}
@@ -96,7 +94,6 @@ void printFile(string f) {
 
 			write('\n');
 			isNewLine = true;
-			i++;
 			ln++;
 			
 			continue;
@@ -105,7 +102,6 @@ void printFile(string f) {
 		if ((numberAll || numberNonBlank) && isNewLine) putLineNumber(ln);
 
 		writeChar(g);
-		i++;
 		isNewLine = false;
 	}
 }
@@ -144,15 +140,12 @@ dchar getChar() {
 void printStdio() {
 	dchar g = getChar();
 	bool isNewLine = true;
-	size_t i;
 	size_t ln = 1;
-	g = getChar();
 	while (!stdin.eof()) {
 
 		// Handle tabs
 		if (g == '\t' && showTabs) {
 			write("^I");
-			i++;
 			isNewLine = false;
 			g = getChar();
 			continue;
@@ -166,7 +159,6 @@ void printStdio() {
 
 			write('\n');
 			isNewLine = true;
-			i++;
 			ln++;
 			g = getChar();
 			continue;
@@ -174,10 +166,8 @@ void printStdio() {
 
 		if ((numberAll || numberNonBlank) && isNewLine) putLineNumber(ln);
 
-
 		writeChar(Grapheme([g]));
 		
-		i++;
 		isNewLine = false;
 		g = getChar();
 	}
@@ -199,6 +189,6 @@ void writeChar(Grapheme c) {
 		return;
 	}
 
-	write(toUTF8(c[0..c.length].array));
+	write(c[0..c.length].array);
 	return;
 }
