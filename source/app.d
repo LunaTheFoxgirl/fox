@@ -80,6 +80,7 @@ void printFile(string f) {
 	size_t ln = 1;
 	foreach(g; byGrapheme(f)) {
 
+		// Handle tabs
 		if (g[0] == '\t' && showTabs) {
 			write("^I");
 			i++;
@@ -142,10 +143,47 @@ dchar getChar() {
 
 void printStdio() {
 	dchar g = getChar();
+	bool isNewLine = true;
+	size_t i;
+	size_t ln = 1;
+	g = getChar();
 	while (!stdin.eof()) {
+
+		// Handle tabs
+		if (g == '\t' && showTabs) {
+			write("^I");
+			i++;
+			isNewLine = false;
+			g = getChar();
+			continue;
+		}
+
+		// Handle getting newline state
+		if (g == '\n') {
+			if (showEnds) write("$");
+			if (isNewLine && squeezeBlanks) continue;
+			if (!numberNonBlank && numberAll && isNewLine) putLineNumber(ln);
+
+			write('\n');
+			isNewLine = true;
+			i++;
+			ln++;
+			g = getChar();
+			continue;
+		}
+
+		if ((numberAll || numberNonBlank) && isNewLine) putLineNumber(ln);
+
+
 		writeChar(Grapheme([g]));
+		
+		i++;
+		isNewLine = false;
 		g = getChar();
 	}
+
+	// after EOF is technically $, so.
+	if (showEnds) write("$");
 }
 
 // Character replacment range and character count
