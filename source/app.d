@@ -120,11 +120,31 @@ void putLineNumber(size_t ln) {
 	write(lnText, "  ");
 }
 
+dchar getChar() {
+	version(posix) {
+
+		import core.sys.posix.termios;
+		int ch;
+
+		termios oldt;
+		termios newt;
+		tcgetattr(0, &oldt);
+		newt = oldt;
+		newt.c_lflag &= ~(ICANON | ECHO);
+		tcsetattr(0, TCSANOW, &newt);
+        ch = getchar();
+        tcsetattr(0, TCSANOW, &oldt);
+		return cast(dchar)ch;
+	} else {
+		return cast(dchar)getchar();
+	}
+}
+
 void printStdio() {
-	int g = cast(int)getchar();
-	while (cast(char)g != '\u0004') {
-		writeChar(Grapheme([cast(wchar)g]));
-		g = cast(char)getchar();
+	dchar g = getChar();
+	while (!stdin.eof()) {
+		writeChar(Grapheme([g]));
+		g = getChar();
 	}
 }
 
