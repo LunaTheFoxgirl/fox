@@ -1,0 +1,8 @@
+name "fox"
+description "fox"
+authors "cli-l"
+copyright "Copyright © 2022, cli-l"
+license "BSD 2-clause"
+
+stringImportPaths "res"
+targetPath "out/"
